@@ -29,7 +29,8 @@ const Reservation = () => {
             mincapacity: 1,
             maxcapacity: 4,
             location: "C101",
-            affiliation: "Available to all"
+            affiliation: "Available to all",
+            notAvailable: [""]
         },
         {
             value: "1",
@@ -38,7 +39,8 @@ const Reservation = () => {
             mincapacity: 1,
             maxcapacity: 4,
             location: "C102",
-            affiliation: "Available to all"
+            affiliation: "Available to all",
+            notAvailable: [""]
         },
         {
             value: "2",
@@ -47,7 +49,8 @@ const Reservation = () => {
             mincapacity: 1,
             maxcapacity: 4,
             location: "B101",
-            affiliation: "Only for SUNY Korea"
+            affiliation: "Only for SUNY Korea",
+            notAvailable: [""]
         },
         {
             value: "3",
@@ -56,7 +59,8 @@ const Reservation = () => {
             mincapacity: 10,
             maxcapacity: 30,
             location: "A101",
-            affiliation: "Available to all"
+            affiliation: "Available to all",
+            notAvailable: ["Friday", "Saturday", "Sunday"]
         },
         {
             value: "4",
@@ -65,7 +69,8 @@ const Reservation = () => {
             mincapacity: 1,
             maxcapacity: 4,
             location: "B201",
-            affiliation: "Available to all"
+            affiliation: "Available to all",
+            notAvailable: ["Friday", "Saturday", "Sunday"]
         },
         {
             value: "5",
@@ -74,7 +79,8 @@ const Reservation = () => {
             mincapacity: 1,
             maxcapacity: 4,
             location: "B301",
-            affiliation: "Only for SUNY Korea"
+            affiliation: "Only for SUNY Korea", 
+            notAvailable: [""]
         }
     ];
 
@@ -98,6 +104,18 @@ const Reservation = () => {
             window.alert(`Number of people must be between ${facilityInfo.mincapacity} and ${facilityInfo.maxcapacity}.`);
             return;     //if not, alert the user with the minCapacity and maxCapacity info and block reservation. 
         }
+
+        const dateObj= new Date(date); //cgreate a Date object using the selected date from the user input
+
+        const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday"];
+        const selectedDay = weekDays[dateObj.getDay()];
+
+        // Check if the selectedDay is in the facility's notAvailable list
+        if(facilityInfo.notAvailable.includes(selectedDay)){
+            window.alert(`This facility is not available on ${selectedDay}!`);
+            return; //block the user from submitting if s/he tries to reserve notAvailable day
+        }
+
 
         const ReservationId = Math.random();    //set reservationId as random number in order to
                                                 //use it a id in ReservationHistory.js
@@ -155,6 +173,7 @@ const Reservation = () => {
                     <p><i className="bi bi-people"> {facilityInfo.mincapacity} - {facilityInfo.maxcapacity}</i></p>
                     <p><i className="bi bi-map"> {facilityInfo.location}</i></p>
                     <p><i className="bi bi-info"> {facilityInfo.affiliation}</i></p>
+                    <p><i className="bi bi-calendar"> Not available day:  {facilityInfo.notAvailable.join(", ")}</i></p>
                 </div>
                 <div style={ {width: "40%"} }>
                     <label htmlFor="date" className="form-label">Date to be Used:</label>

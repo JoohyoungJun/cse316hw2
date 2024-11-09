@@ -59,7 +59,7 @@ const FacilityList = () => {
                     <div className="card-body">
                         <h3><strong>Seminar Room</strong></h3>
                         <p>Lecture Hall</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu, Fri, Sat, Sun</i></p>
+                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu</i></p>
                         <p><i className="bi bi-people"></i> 1 - 4</p>
                         <p><i className="bi bi-map"> C1033</i></p>
                         <p><i className="bi bi-info"> Available to all</i></p>
