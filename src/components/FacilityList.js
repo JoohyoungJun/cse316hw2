@@ -3,79 +3,42 @@ Name: Joohyoung Jun
 Email: joohyoung.jun@stonybrook.edu
 */
 import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 import "../App.css";
 
 const FacilityList = () => {
+    const [facilities, setFacilities] = useState([]);
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/facilities").then(response => {
+            console.log(response.data);
+            setFacilities(response.data);
+        })
+        .catch(err => {
+            console.error("error loading facility info", err);
+        });
+    }, []);
+
     return (
-        <div style={ {paddingLeft: "10%"}}>
-            <h1><strong>  Facility List</strong></h1>
+        <div style = { { paddingLeft: "10%"}}>
+            <h1><strong>Facility List</strong></h1>
             <div className="row">
-                <div className="card" style={ {width:"30%"} }>
-                    <img src="/assignImage/gym.jpg" alt="Gym" className="card-img-top" />
-                    <div className="card-body">
-                        <h3><strong>Gym</strong></h3>
-                        <p>place used for physical activity</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu, Fri, Sat, Sun</i></p>
-                        <p><i className="bi bi-people"></i> 1 - 4</p>
-                        <p><i className="bi bi-map"> C1033</i></p>
-                        <p><i className="bi bi-info"> Available to all</i></p>
+            {facilities.map(facility => (
+                    <div className="card" style={ { width: "375px" } } key={facility.id}>
+                        <img src={facility.imageSrc} alt={facility.facilityName} 
+                            className="card-img-left" style={{marginTop: "10px"}} />
+                        <div className="card-body">
+                            <h3><strong>{facility.facilityName}</strong></h3>
+                            <p>{facility.facilityDscr}</p>
+                            <p><i className="bi bi-calendar"> {facility.availableDays}</i></p>
+                            <p><i className="bi bi-people"></i> {facility.minCap} - {facility.maxCap}</p>
+                            <p><i className="bi bi-map"> {facility.location}</i></p>
+                            <p><i className="bi bi-info"> {facility.onlySKFlag ? 'Only for SUNY Korea' : 'Available to all'}</i></p>
+                        </div>
                     </div>
-                </div>
-                <div className="card" style={ {width:"30%"} }>
-                    <img src="/assignImage/pool.jpg" alt="Pool" className="card-img-top" />
-                    <div className="card-body">
-                        <h3><strong>Swimming Pool</strong></h3>
-                        <p>Aquatic Center</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu, Fri, Sat, Sun</i></p>
-                        <p><i className="bi bi-people"></i> 1 - 4</p>
-                        <p><i className="bi bi-map"> C1033</i></p>
-                        <p><i className="bi bi-info"> Available to all</i></p>
-                    </div>
-                </div>
-                <div className="card" style={ {width:"30%"} }>
-                    <img src="/assignImage/conference.jpg" alt="Conference Room" className="card-img-top" />
-                    <div className="card-body">
-                        <h3><strong>Conference Room</strong></h3>
-                        <p>Meeting Space</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu, Fri, Sat, Sun</i></p>
-                        <p><i className="bi bi-people"></i> 1 - 4</p>
-                        <p><i className="bi bi-map"> C1033</i></p>
-                        <p><i className="bi bi-info"> Only for SUNY Korea</i></p>
-                    </div>
-                </div>
-                <div className="card" style={ {width:"30%"} }>
-                    <img src="/assignImage/auditorium.jpg" alt="Auditorium" className="card-img-top" />
-                    <div className="card-body">
-                        <h3><strong>Auditorium</strong></h3>
-                        <p>The Auditorium Theater</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu</i></p>
-                        <p><i className="bi bi-people"></i> 10 - 30</p>
-                        <p><i className="bi bi-map"> A234</i></p>
-                        <p><i className="bi bi-info"> Available to all</i></p>
-                    </div>
-                </div>
-                <div className="card" style={ {width:"30%"} }>
-                    <img src="/assignImage/seminar.jpg" alt="Seminar Room" className="card-img-top" />
-                    <div className="card-body">
-                        <h3><strong>Seminar Room</strong></h3>
-                        <p>Lecture Hall</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu</i></p>
-                        <p><i className="bi bi-people"></i> 1 - 4</p>
-                        <p><i className="bi bi-map"> C1033</i></p>
-                        <p><i className="bi bi-info"> Available to all</i></p>
-                    </div>
-                </div>
-                <div className="card" style={ {width:"30%"} }>
-                    <img src="/assignImage/library.jpg" alt="Library" className="card-img-top" />
-                    <div className="card-body">
-                        <h3><strong>Library</strong></h3>
-                        <p>Study and Read Books</p>
-                        <p><i className="bi bi-calendar"> Mon, Tue, Wed, Thu, Fri, Sat, Sun</i></p>
-                        <p><i className="bi bi-people"></i> 1 - 4</p>
-                        <p><i className="bi bi-map"> C1033</i></p>
-                        <p><i className="bi bi-info"> Only for SUNY Korea</i></p>
-                    </div>
-                </div>
+                ))}
             </div>
         </div> 
     );
