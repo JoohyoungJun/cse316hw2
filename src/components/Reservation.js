@@ -134,6 +134,20 @@ const Reservation = () => {
         }
 
         //cmpr sethrs would be here...?
+        
+        //check thru reservation list if there exist any reservations that the user made before
+        //temporarily set username to "User" before assignment#4
+        const userHasReserved = reservations.some(reservation => {
+            const userNameTmp = "User"; // will change it in the future. 
+            return (reservation.userName === userNameTmp) 
+                && (reservation.reservationName === facilityInfo.name);
+        });
+
+        if(userHasReserved){
+            window.alert(`You have made a reservation for ${facilityInfo.name} before!`);
+            return;
+        }
+
 
         //check reservation list if there exist the reservation already on the day user selected
         //used some() in order to find the facility is reserved on the day or not.
