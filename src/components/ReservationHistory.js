@@ -1,63 +1,64 @@
-/*
-Name: Joohyoung Jun
-Email: joohyoung.jun@stonybrook.edu
-*/
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
+const ReservationHistory = () => {
+    const [reservations, setReservations] = useState([]);
 
-const ReservationHistory = () => {  //get reservation info using useState and JSON (local storage)
+    useEffect(() => {   //get reservations using axios.get()
+        axios.get("http://localhost:3001/reservations")
+            .then(response => {
+                setReservations(response.data);
+            })
+            .catch(err => {
+                console.error("Error fetching reservations: ", err);
+            });
+    }, []);
 
-    const [reservations, setReservations] = useState(
-        JSON.parse(localStorage.getItem("reservations")) || []  
-    );
-    console.log(localStorage.getItem("reservations"));
-    //localStorage.clear("reservations");
+    const cancelReservation = (reservationId) => {
+        axios.delete(`http://localhost:3001/reservations/${reservationId}`)
+            .then(response => { //used filter in order to literally 'filter' what would not be deleted. (rest reservations)
+                setReservations(reservations.filter(reservation => reservation.reservationId !== reservationId));
+            })
+            .catch(err => {
+                console.error("Error canceling reservation: ", err);
+            });
+    }
 
-    if(reservations.length === 0){  //an entry page if there doesnt exist any reservations
+    if (reservations.length === 0) {    //displayed when reservations list is empty
         return (
-            <div style={ {paddingLeft: "10%"} }>
+            <div style={{ paddingLeft: "10%" }}>
                 <h1><strong>No Reservation Yet</strong></h1>
             </div>
         );
     }
 
-    const cancelReservation = (reservationId) => {
-        let afterDeletion = []; //build an array for reservation after deletion
-        
-        for (let i = 0; i < reservations.length; i++) { //check thru old reservations
-            if (reservations[i].id !== reservationId) { //push old items which does not match
-                afterDeletion.push(reservations[i]);    //reservation id which will be deleted
-            }
-        }
-        //update localStorage with the new array of reservations (after deletion)
-        localStorage.setItem("reservations", JSON.stringify(afterDeletion));
-        setReservations(afterDeletion);
-
-    }
-
     return (
-        <div style={ {paddingLeft: "10%"} }>
+        <div style={{ paddingLeft: "10%" }}>
             <h1><strong>Reservation History</strong></h1>
             <div className="row">
                 {reservations.map((reservation) => (
-                        <div key={reservation.id} className="card mb-3" style={ {width: "90%"} }>
-                            <img src={reservation.image} alt={reservation.facility} className="card-img-left"   //I have no idea why this doesnt work.
-                                style={ {width: "40%", marginTop: "10px"} }></img>
-                            <div className="card-body">
-                                <h3><strong>{reservation.facility}</strong></h3>
-                                <p><i className="bi bi-pen"> {reservation.purpose}</i></p>
-                                <p><i className="bi bi-calendar"> {reservation.date}</i></p>
-                                <p><i className="bi bi-map"> {reservation.location}</i></p>
-                                <p><i className="bi bi-people"> {reservation.numPeople}</i></p>
-                                <p><i className="bi bi-info"> {reservation.affiliation}</i></p>
-                                <button className="btn btn-outline-danger"
-                                    onClick={() => cancelReservation(reservation.id)}>Cancel</button>
-                            
-                            </div>
+                    <div key={reservation.reservationId} className="card" style={{ width: "80%", 
+                        display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <img id="reservationImage"
+                            src={reservation.imageSrc}
+                            alt={reservation.reservationName}
+                            className="card-img"
+                            style={ { width: "40%", margin: "10px"} }
+                        />
+                        <div className="card-body-right">
+                            <h3><strong>{reservation.reservationName}</strong></h3>
+                            <p><i className="bi bi-pen"> {reservation.purpose}</i></p>
+                            <p><i className="bi bi-calendar"> {new Date(reservation.reservationDate).toLocaleDateString()}</i></p>
+                            <p><i className="bi bi-map"> {reservation.location}</i></p>
+                            <p><i className="bi bi-people"> {reservation.userNum}</i></p>
+                            <p><i className="bi bi-info"> {reservation.isSK ? "Only for SUNY Korea" : "Available to all"}</i></p>
+                            <button className="btn btn-outline-danger" style={ {margin: "5px"} } onClick={() => 
+                                cancelReservation(reservation.reservationId)}>
+                                Cancel
+                            </button>
                         </div>
-                    ))
-                }
+                    </div>
+                ))}
             </div>
         </div>
     );

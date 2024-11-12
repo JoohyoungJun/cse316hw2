@@ -1,8 +1,9 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Reservation = () => {
+    const [reservations, setReservations] = useState([]);
     const [selectedFacility, setSelectedFacility] = useState("0");
     const [reservationDate, setReservationDate] = useState("");
     const [numPeople, setNumPeople] = useState("");
@@ -14,7 +15,7 @@ const Reservation = () => {
         image: "/assignImage/gym.jpg",
         mincapacity: 1,
         maxcapacity: 4,
-        location: "C1033",
+        location: "C101",
         affiliation: "Available to all",
         availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         notAvailable: []
@@ -98,6 +99,16 @@ const Reservation = () => {
         setAffiliation(userAns);
     };
 
+    useEffect(() => {   //get reservations using axios.get()
+        axios.get("http://localhost:3001/reservations")
+            .then(response => {
+                setReservations(response.data);
+            })
+            .catch(err => {
+                console.error("Error fetching reservations: ", err);
+            });
+    }, []);
+
     const submission = () => {
         if (!reservationDate || !numPeople || !affiliation || !purpose) {  //check if all required fields are filled
             window.alert('Fill all required fields!');  // if not, alert the user and block reservation
@@ -111,7 +122,7 @@ const Reservation = () => {
 
         const dateObj= new Date(reservationDate); //create a Date object using the selected date from the user input
 
-        //cmpr sethrs would be here...?
+        
 
         const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday"];
         const selectedDay = weekDays[dateObj.getDay()];
@@ -120,6 +131,27 @@ const Reservation = () => {
         if(!facilityInfo.availableDays.includes(selectedDay)){
             window.alert(`This facility is not available on ${selectedDay}!`);
             return; //block the user from submitting if s/he tries to reserve notAvailable day
+        }
+
+        //cmpr sethrs would be here...?
+
+        //check reservation list if there exist the reservation already on the day user selected
+        //used some() in order to find the facility is reserved on the day or not.
+        //if so, return true
+        const isReserved = reservations.some(reservation => {
+            //compare dates
+            const dateReserved = new Date(reservation.reservationDate).toLocaleDateString();
+            const userDate = new Date(dateObj).toLocaleDateString();
+            
+            return (reservation.reservationName === facilityInfo.name)
+                && (dateReserved === userDate);
+        });
+        
+        //facility is reserved already
+        //block user to make a reservation if the facility already reserved the day user selected
+        if(isReserved){
+            window.alert(`${facilityInfo.name} is reserved on ${dateObj.toLocaleDateString} already!`);
+            return;
         }
         
 
@@ -131,7 +163,8 @@ const Reservation = () => {
             isSK: affiliation === "Yes" ? true : false,
             purpose,
             reservationName: facilityInfo.name,
-            userName: "User",  // Placeholder for username
+            userName: "User",
+            imageSrc: facilityInfo.image
             
         };
 

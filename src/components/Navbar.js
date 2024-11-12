@@ -8,7 +8,7 @@ import "../App.css";
 
 const Navbar = () => {
     return (
-        <nav className="navbar navbar-expand-xl navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container">
                 <Link to="/" className="navbar-brand">
                     <i className="bi bi-house"></i>

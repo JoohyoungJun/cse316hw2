@@ -30,7 +30,7 @@ app.get('/facilities', (req, res) => {
 
 //POST for reservations
 app.post('/reservations', (req, res) => {
-    const { reservationId, reservationDate, userNum, isSK, purpose, reservationName, userName} = req.body;
+    const { reservationId, reservationDate, userNum, isSK, purpose, reservationName, userName, imageSrc} = req.body;
     
     let query = 
     `INSERT INTO reservations (
@@ -40,7 +40,8 @@ app.post('/reservations', (req, res) => {
         isSK,
         purpose,
         reservationName,
-        userName
+        userName,
+        imageSrc
     ) VALUES (
         ${reservationId},
         '${reservationDate}',
@@ -48,7 +49,8 @@ app.post('/reservations', (req, res) => {
         ${isSK},
         '${purpose}',
         '${reservationName}',
-        '${userName}'
+        '${userName}',
+        '${imageSrc}'
     )`;
 
     con.query(query, (err, result) => {
@@ -72,6 +74,21 @@ app.get('/reservations', (req, res) => {
             return;
         }
         res.json(result);
+    });
+});
+
+// DELETE for reservations
+app.delete('/reservations/:id', (req, res) => {
+    const { id } = req.params;
+    const query = `DELETE FROM reservations WHERE reservationId = ?`;
+
+    con.query(query, [id], (err, result) => {
+        if (err) {
+            console.error("Error deleting reservation: ", err);
+            res.status(500).send("Error deleting reservation");
+            return;
+        }
+        res.json({ message: 'Reservation deleted successfully' });
     });
 });
 
