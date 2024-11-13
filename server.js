@@ -1,3 +1,7 @@
+/*
+Name: Joohyoung Jun
+Email: joohyoung.jun@stonybrook.edu
+*/
 const express = require('express');
 const mysql = require('mysql2');
 const app = express();
@@ -30,7 +34,7 @@ app.get('/facilities', (req, res) => {
 
 //POST for reservations
 app.post('/reservations', (req, res) => {
-    const { reservationId, reservationDate, userNum, isSK, purpose, reservationName, userName, imageSrc} = req.body;
+    const { reservationId, reservationDate, userNum, isSK, purpose, reservationName, userName, imageSrc, reservationLocation} = req.body;
     
     let query = 
     `INSERT INTO reservations (
@@ -41,7 +45,8 @@ app.post('/reservations', (req, res) => {
         purpose,
         reservationName,
         userName,
-        imageSrc
+        imageSrc,
+        reservationLocation
     ) VALUES (
         ${reservationId},
         '${reservationDate}',
@@ -50,16 +55,14 @@ app.post('/reservations', (req, res) => {
         '${purpose}',
         '${reservationName}',
         '${userName}',
-        '${imageSrc}'
+        '${imageSrc}',
+        '${reservationLocation}'
     )`;
 
     con.query(query, (err, result) => {
-        if (err) {
-            console.error("Error inserting reservation: ", err);
-            res.status(500).send("Error inserting reservation");
-            return;
-        }
-        res.json({ message: 'Reservation added successfully'});
+        if (err) 
+            throw err
+        res.json(result);
     });
 });
 
@@ -68,11 +71,8 @@ app.get('/reservations', (req, res) => {
     const query = "SELECT * FROM reservations";
 
     con.query(query, (err, result) => {
-        if (err) {
-            console.error("Error fetching reservations: ", err);
-            res.status(500).send("Error fetching reservations");
-            return;
-        }
+        if (err) 
+            throw err
         res.json(result);
     });
 });
@@ -83,12 +83,9 @@ app.delete('/reservations/:id', (req, res) => {
     const query = `DELETE FROM reservations WHERE reservationId = ?`;
 
     con.query(query, [id], (err, result) => {
-        if (err) {
-            console.error("Error deleting reservation: ", err);
-            res.status(500).send("Error deleting reservation");
-            return;
-        }
-        res.json({ message: 'Reservation deleted successfully' });
+        if (err) 
+            throw err;
+        res.json(result);
     });
 });
 

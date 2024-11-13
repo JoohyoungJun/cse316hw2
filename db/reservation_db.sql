@@ -30,5 +30,6 @@ CREATE TABLE IF NOT EXISTS reservations (
     purpose VARCHAR(255),
     reservationName VARCHAR(100),
     userName VARCHAR(100),
-    imageSrc VARCHAR(100)
+    imageSrc VARCHAR(100),
+    reservationLocation VARCHAR(100)
 );

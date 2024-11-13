@@ -1,3 +1,7 @@
+/*
+Name: Joohyoung Jun
+Email: joohyoung.jun@stonybrook.edu
+*/
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -49,9 +53,9 @@ const ReservationHistory = () => {
                             <h3><strong>{reservation.reservationName}</strong></h3>
                             <p><i className="bi bi-pen"> {reservation.purpose}</i></p>
                             <p><i className="bi bi-calendar"> {new Date(reservation.reservationDate).toLocaleDateString()}</i></p>
-                            <p><i className="bi bi-map"> {reservation.location}</i></p>
+                            <p><i className="bi bi-map"> {reservation.reservationLocation}</i></p>
                             <p><i className="bi bi-people"> {reservation.userNum}</i></p>
-                            <p><i className="bi bi-info"> {reservation.isSK ? "Only for SUNY Korea" : "Available to all"}</i></p>
+                            <p><i className="bi bi-info"> Is SUNY Korea?: {reservation.isSK ? "Yes" : "NO"}</i></p>
                             <button className="btn btn-outline-danger" style={ {margin: "5px"} } onClick={() => 
                                 cancelReservation(reservation.reservationId)}>
                                 Cancel

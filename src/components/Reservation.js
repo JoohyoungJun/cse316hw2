@@ -1,3 +1,7 @@
+/*
+Name: Joohyoung Jun
+Email: joohyoung.jun@stonybrook.edu
+*/
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -178,7 +182,8 @@ const Reservation = () => {
             purpose,
             reservationName: facilityInfo.name,
             userName: "User",
-            imageSrc: facilityInfo.image
+            imageSrc: facilityInfo.image,
+            reservationLocation: facilityInfo.location
             
         };
 
@@ -227,7 +232,7 @@ const Reservation = () => {
                     <p><i className="bi bi-people"> {facilityInfo.mincapacity} - {facilityInfo.maxcapacity}</i></p>
                     <p><i className="bi bi-map"> {facilityInfo.location}</i></p>
                     <p><i className="bi bi-info"> {facilityInfo.affiliation}</i></p>
-                    <p><i className="bi bi-calendar"> Available days: {facilityInfo.availableDays.join(", ")}</i></p>
+                    <p><i className="bi bi-calendar"> Available: {facilityInfo.availableDays.join(", ")}</i></p>
                 </div>
                 <div style={{ width: "40%" }}>
                     <label htmlFor="date" className="form-label">Date to be Used:</label>
