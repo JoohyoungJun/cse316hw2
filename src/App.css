@@ -42,7 +42,7 @@ Email: joohyoung.jun@stonybrook.edu
 }
 
 body {
-  background-color: #D4BEE4;
+  background-color: #ffffff;
 }
 
 .card-img-top {
@@ -54,7 +54,6 @@ body {
 }
 
 .navbar {
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -72,3 +71,7 @@ body {
 
 }
 
+
+.container {
+  margin-right: -25px;
+}

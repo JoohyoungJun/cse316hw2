@@ -168,7 +168,7 @@ const Reservation = () => {
         //facility is reserved already
         //block user to make a reservation if the facility already reserved the day user selected
         if(isReserved){
-            window.alert(`${facilityInfo.name} is reserved on ${dateObj.toLocaleDateString} already!`);
+            window.alert(`${facilityInfo.name} is reserved on ${dateObj.toLocaleDateString()} already!`);
             return;
         }
         
