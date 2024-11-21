@@ -4,12 +4,14 @@ Email: joohyoung.jun@stonybrook.edu
 */
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';  
-import MainPage from './components/MainPage';
-import FacilityList from './components/FacilityList';
-import Reservation from './components/Reservation';
-import UserInfo from './components/UserInfo';
-import ReservationHistory from './components/ReservationHistory';
+import Navbar from './components/Navbar.js';  
+import MainPage from './components/MainPage.js';
+import FacilityList from './components/FacilityList.js';
+import Reservation from './components/Reservation.js';
+import UserInfo from './components/UserInfo.js';
+import ReservationHistory from './components/ReservationHistory.js';
+import SignIn from './components/SignIn.js';
+import SignUp from './components/SignUp.js';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/reservation" element={<Reservation />} />
           <Route path="/user-info" element={<UserInfo />} />
           <Route path="/reservation-history" element={<ReservationHistory />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
         </Routes>
       </div>
     </Router>

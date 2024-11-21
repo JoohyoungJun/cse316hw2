@@ -37,6 +37,14 @@ const MainPage = () => {
                 </li>
                 <li>
                     <h2><strong>User</strong></h2>
+                    <ul>
+                        <li>
+                            <p>User Info</p>
+                        </li>
+                        <li>
+                            <p>Reservation History</p>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

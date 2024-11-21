@@ -35,6 +35,9 @@ const Navbar = () => {
                             </ul>
                         </li>
                         <li className="nav-item">
+                            <Link to="sign-in" className="nav-link">Sign In</Link>
+                        </li>
+                        <li className="nav-item">
                             <Link to="/user-info" className="nav-link user-icon">
                                 <img src="/assignImage/user.png" alt="user.png" style={{ width: '40px', height: '40px' }} />
                             </Link>

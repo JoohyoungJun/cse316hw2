@@ -1,12 +1,23 @@
 /*
+import { hashutil } from './util/hashutil';
 Name: Joohyoung Jun
 Email: joohyoung.jun@stonybrook.edu
 */
+
+/*
 const express = require('express');
 const mysql = require('mysql2');
-const app = express();
-const PORT = 3001;
 const cors = require('cors');
+const { hashutil } = require('./util/hashutil');
+*/
+
+import express from 'express';
+import mysql from 'mysql2';
+import cors from 'cors';
+import { hashutil } from './src/util/hashutil.js';
+
+const PORT = 3001;
+const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -61,7 +72,7 @@ app.post('/reservations', (req, res) => {
 
     con.query(query, (err, result) => {
         if (err) 
-            throw err
+            throw err;
         res.json(result);
     });
 });
@@ -72,7 +83,7 @@ app.get('/reservations', (req, res) => {
 
     con.query(query, (err, result) => {
         if (err) 
-            throw err
+            throw err;
         res.json(result);
     });
 });
@@ -88,6 +99,31 @@ app.delete('/reservations/:id', (req, res) => {
         res.json(result);
     });
 });
+
+//post for sign-up
+app.post('/sign-up', (req, res) => {
+    const { email, pw, userName } = req.body;
+
+    //hash email and password using hashutil.js
+    const hashpw = hashutil(email, pw);
+
+    //save hashed password into login table in reservation_db
+    let query = 
+        `INSERT INTO login (
+            email, 
+            userName, 
+            pw
+        ) VALUES(
+            '${email}',
+            '${userName}',
+            '${hashpw}'
+        )`;
+    con.query(query, (err, result) => {
+        if(err)
+            console.error("inserting login data error", err);
+        res.json(result);
+    })
+})
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost: ${PORT}`);
