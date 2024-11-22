@@ -34,9 +34,8 @@ CREATE TABLE IF NOT EXISTS reservations (
     reservationLocation VARCHAR(100)
 );
 
-CREATE TABLE login (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
+CREATE TABLE IF NOT EXISTS login (
+    email VARCHAR(255) NOT NULL,
     userName VARCHAR(255) NOT NULL,
     pw VARCHAR(255) NOT NULL
 );

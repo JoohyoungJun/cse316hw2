@@ -14,7 +14,7 @@ const { hashutil } = require('./util/hashutil');
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
-import { hashutil } from './src/util/hashutil.js';
+//import { hashutil } from './src/util/hashutil.js';
 
 const PORT = 3001;
 const app = express();
@@ -104,10 +104,6 @@ app.delete('/reservations/:id', (req, res) => {
 app.post('/sign-up', (req, res) => {
     const { email, pw, userName } = req.body;
 
-    //hash email and password using hashutil.js
-    const hashpw = hashutil(email, pw);
-
-    //save hashed password into login table in reservation_db
     let query = 
         `INSERT INTO login (
             email, 
@@ -116,14 +112,36 @@ app.post('/sign-up', (req, res) => {
         ) VALUES(
             '${email}',
             '${userName}',
-            '${hashpw}'
+            '${pw}'
         )`;
     con.query(query, (err, result) => {
         if(err)
             console.error("inserting login data error", err);
         res.json(result);
     })
-})
+});
+
+//get for sign-up
+app.get('/sign-up', (req, res) => {
+    const query = "SELECT * FROM login";
+
+    con.query(query, (err, results) => {
+        if(err)
+            console.error("error fetching email");
+        res.json(results);
+    })
+});
+
+//post for sign-in
+app.post('/sign-in', (req, res) => {
+    const { email, pw} = req.body;
+
+    con.query("SELECT pw FROM login WHERE email =?", [email], (result) => {
+        if(result.length === 0 || result[0].pw !== pw)
+            return res.status(400);
+        res.status(200);
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost: ${PORT}`);
