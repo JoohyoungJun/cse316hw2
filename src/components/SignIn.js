@@ -11,16 +11,29 @@ const SignIn = () => {
     const [email, setEmail] = useState("");
     const [pw, setPw] = useState("");
 
-    const submission = () => {
+    const submission = async (e) => {
 
+        try{
+            const loginstatus = await axios.post("http://localhost:3001/sign-in",
+                { email: email, pw: pw ,
+            });
+            window.alert(loginstatus.data);
+        } catch (err){
+            if(err.response.status === 400)
+                window.alert("Wrong mail or password!");
+            else{
+                console.error("error: ", err);
+                window.alert("Please try later..");
+            }
+        }
     };
 
-    const insertEmail = () => {
-
+    const insertEmail = (e) => {
+        setEmail(e.target.value);
     };
 
-    const insertPw = () => {
-
+    const insertPw = (e) => {
+        setPw(e.target.value);
     };
 
     return (

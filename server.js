@@ -14,7 +14,7 @@ const { hashutil } = require('./util/hashutil');
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
-//import { hashutil } from './src/util/hashutil.js';
+import { hashutil } from './src/util/hashutil.js';
 
 const PORT = 3001;
 const app = express();
@@ -135,11 +135,17 @@ app.get('/sign-up', (req, res) => {
 //post for sign-in
 app.post('/sign-in', (req, res) => {
     const { email, pw} = req.body;
+    const hashpw = hashutil(email, pw);
 
-    con.query("SELECT pw FROM login WHERE email =?", [email], (result) => {
-        if(result.length === 0 || result[0].pw !== pw)
-            return res.status(400);
-        res.status(200);
+    con.query("SELECT pw FROM login WHERE email =?", [email], (err, result) => {
+        //query error
+        if(err)
+            return res.status(500).send("server error occured");
+        //no email value or no password matching
+        if(result.length === 0 || result[0].pw !== hashpw)
+            return res.status(400).send("Wrong email or password!");
+        //every condition met, login success
+        res.status(200).send("Sign in success!");
     });
 });
 
