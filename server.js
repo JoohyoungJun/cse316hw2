@@ -15,12 +15,34 @@ import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
 import { hashutil } from './src/util/hashutil.js';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
+
+dotenv.config();
+const { sign } = jwt;
+
+//arrays for refresh tokens
+let refreshTokens = [];
 
 const PORT = 3001;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
+app.use(cookieParser());
+app.use((req, res, next) => {
+    /*
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    */
+    next();
+});
 
 let con = mysql.createConnection({
     host: "localhost",
@@ -78,18 +100,21 @@ app.post('/reservations', (req, res) => {
 });
 
 //GET for reservations
-app.get('/reservations', (req, res) => {
+app.get('/reservations', authenticateToken, (req, res) => {
     const query = "SELECT * FROM reservations";
 
     con.query(query, (err, result) => {
-        if (err) 
-            throw err;
-        res.json(result);
-    });
+        if (err) {
+            console.error("Error fetching reservations: ", err);
+            return res.status(500).json({message: "Failed to Fetch reservation"});
+        }
+        console.log("reservation fetching success", result);
+        res.status(200).json(result);
+        });
 });
 
 // DELETE for reservations
-app.delete('/reservations/:id', (req, res) => {
+app.delete('/reservations/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
     const query = `DELETE FROM reservations WHERE reservationId = ?`;
 
@@ -135,19 +160,89 @@ app.get('/sign-up', (req, res) => {
 //post for sign-in
 app.post('/sign-in', (req, res) => {
     const { email, pw} = req.body;
+    console.log("req body: ", req.body);
     const hashpw = hashutil(email, pw);
+    console.log("hashpw: ", hashpw);
 
-    con.query("SELECT pw FROM login WHERE email =?", [email], (err, result) => {
+    con.query("SELECT email, userName, pw FROM login WHERE email =?", [email], (err, result) => {
         //query error
-        if(err)
+        if(err) {
+            console.error("query error: ", err);
             return res.status(500).send("server error occured");
+        }
         //no email value or no password matching
         if(result.length === 0 || result[0].pw !== hashpw)
-            return res.status(400).send("Wrong email or password!");
+            return res.status(400).json({ message: "Wrong email or password!" });
+
+        //generate access token and refresh token
+        const user = { email: result[0].email, userName: result[0].userName };
+        const accessToken = generateAccessToken(user);
+        const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+
+        //save refreshToken
+        refreshTokens.push(refreshToken);
+
         //every condition met, login success
-        res.status(200).send("Sign in success!");
+        //res.status(200).send("Sign in success!");
+        console.log("Access Token: ", accessToken);
+        console.log("Refresh token", refreshToken);
+        res.status(200).json({ accessToken, refreshToken, message: "Sign-in Success!" });
     });
 });
+
+//post for sign-out
+app.post('/sign-out', (req, res) => {
+    const refreshToken = req.body.token;
+
+    //remove refresh token using filter
+    refreshTokens = refreshTokens.filter(token => token !== refreshToken);
+
+    console.log("Refresh token removed:", refreshToken);
+
+    res.status(200).json({ message: "Sign-out success!" });
+});
+
+//post for refreshToken
+app.post('/token', (req, res) => {
+    const refreshToken = req.body.token;
+    if (refreshToken === null) return res.sendStatus(401);
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        const accessToken = generateAccessToken( {email: user.email});
+        res.json({accessToken: accessToken});
+    })
+})
+
+function generateAccessToken(user){
+    console.log("generating access token: ", user);
+    return sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
+}
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    console.log("Authorization header received:", authHeader); // check authheader
+
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log("Extracted token:", token); // check token
+
+    if (token == null) {
+        console.log("No token provided in Authorization header.");
+        return res.status(401).json({ message: "No token provided" });
+    }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            console.log("Token verification failed:", err.message);
+            return res.status(403).json({ message: "Token is invalid or expired" });
+        }
+
+        req.user = user;
+        console.log("Token verified successfully:", user);
+        next();
+    });
+}
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost: ${PORT}`);

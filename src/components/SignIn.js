@@ -6,25 +6,29 @@ import React from "react";
 import { useState } from 'react';
 import axios from "axios";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
     const [email, setEmail] = useState("");
     const [pw, setPw] = useState("");
 
-    const submission = async (e) => {
+    const navigate = useNavigate();
 
-        try{
-            const loginstatus = await axios.post("http://localhost:3001/sign-in",
-                { email: email, pw: pw ,
+    const submission = async (e) => {
+        e.preventDefault();
+        try {
+            const sts = await axios.post("http://localhost:3001/sign-in", {
+                email,
+                pw,
             });
-            window.alert(loginstatus.data);
-        } catch (err){
-            if(err.response.status === 400)
-                window.alert("Wrong mail or password!");
-            else{
-                console.error("error: ", err);
-                window.alert("Please try later..");
-            }
+            console.log("login status: ", sts.data);
+            localStorage.setItem("authToken", sts.data.authToken);
+            localStorage.setItem("refreshToken", sts.data.refreshToken);
+            window.alert("Sign-in Success!");
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+            window.alert("Sign-in failed!");
         }
     };
 

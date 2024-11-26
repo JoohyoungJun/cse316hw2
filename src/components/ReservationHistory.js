@@ -8,33 +8,54 @@ import axios from "axios";
 const ReservationHistory = () => {
     const [reservations, setReservations] = useState([]);
 
-    useEffect(() => {   //get reservations using axios.get()
-        axios.get("http://localhost:3001/reservations")
-            .then(response => {
+    useEffect(() => {
+        const fetchReservations = async () => {
+            try {
+                //get authToken from localStorage
+                const authToken = localStorage.getItem("authToken");
+                if (!authToken) {
+                    console.error("No auth token found. Please log in.");
+                    return;
+                }
+
+                const response = await axios.get("http://localhost:3001/reservations", {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                });
+
                 setReservations(response.data);
-            })
-            .catch(err => {
-                console.error("Error fetching reservations: ", err);
-            });
+                console.log("Fetched reservations:", response.data);
+            } catch (err) {
+                console.error("Error fetching reservations:", err);
+            }
+        };
+
+        fetchReservations();
     }, []);
 
-    const cancelReservation = (reservationId) => {
-        axios.delete(`http://localhost:3001/reservations/${reservationId}`)
-            .then(response => { //used filter in order to literally 'filter' what would not be deleted. (rest reservations)
-                setReservations(reservations.filter(reservation => reservation.reservationId !== reservationId));
-            })
-            .catch(err => {
-                console.error("Error canceling reservation: ", err);
-            });
-    }
+    const cancelReservation = async (reservationId) => {
+        try {
+            const authToken = localStorage.getItem("authToken");
+            if (!authToken) {
+                console.error("No auth token found. Please log in.");
+                return;
+            }
 
-    if (reservations.length === 0) {    //displayed when reservations list is empty
-        return (
-            <div style={{ paddingLeft: "10%" }}>
-                <h1><strong>No Reservation Yet</strong></h1>
-            </div>
-        );
-    }
+            await axios.delete(`http://localhost:3001/reservations/${reservationId}`, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            });
+
+            console.log(`Reservation with ID ${reservationId} canceled successfully.`);
+            setReservations((prevReservations) =>
+                prevReservations.filter((reservation) => reservation.reservationId !== reservationId)
+            );
+        } catch (err) {
+            console.error("Error canceling reservation:", err.response?.data || err.message);
+        }
+    };
 
     return (
         <div style={{ paddingLeft: "10%" }}>

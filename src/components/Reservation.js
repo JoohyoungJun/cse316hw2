@@ -104,16 +104,32 @@ const Reservation = () => {
     };
 
     useEffect(() => {   //get reservations using axios.get()
-        axios.get("http://localhost:3001/reservations")
-            .then(response => {
+        const fetchReservations = async () => {
+            try {
+                const authToken = localStorage.getItem("authToken");
+                if (!authToken) {
+                    console.error("No auth token found");
+                    return;
+                }
+                const response = await axios.get("http://localhost:3001/reservations", {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                });
                 setReservations(response.data);
-            })
-            .catch(err => {
-                console.error("Error fetching reservations: ", err);
-            });
+                console.log("Reservations fetched successfully:", response.data);
+            } catch (err) {
+                console.error("Error fetching reservations:", err);
+            }
+        };
+
+        fetchReservations();
     }, []);
 
-    const submission = () => {
+    const submission = (e) => {
+        //prevent refresh 
+        e.preventDefault();
+
         if (!reservationDate || !numPeople || !affiliation || !purpose) {  //check if all required fields are filled
             window.alert('Fill all required fields!');  // if not, alert the user and block reservation
             return;
@@ -187,7 +203,11 @@ const Reservation = () => {
             
         };
 
-        axios.post("http://localhost:3001/reservations", reservationData)
+        axios.post("http://localhost:3001/reservations", reservationData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+                },
+            })
             .then(response => {
                 window.alert("Reservation Submitted!");
                 setReservationDate("");

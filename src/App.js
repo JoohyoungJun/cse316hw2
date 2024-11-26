@@ -12,6 +12,7 @@ import UserInfo from './components/UserInfo.js';
 import ReservationHistory from './components/ReservationHistory.js';
 import SignIn from './components/SignIn.js';
 import SignUp from './components/SignUp.js';
+import ProtectRoute from './components/ProtectRoute.js';
 
 function App() {
   return (
@@ -22,11 +23,11 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/facility-list" element={<FacilityList />} />
-          <Route path="/reservation" element={<Reservation />} />
-          <Route path="/user-info" element={<UserInfo />} />
-          <Route path="/reservation-history" element={<ReservationHistory />} />
+          <Route path="/reservation" element={<ProtectRoute><Reservation /></ProtectRoute>} />
+          <Route path="/user-info" element={<ProtectRoute><UserInfo /></ProtectRoute>} />
+          <Route path="/reservation-history" element={<ProtectRoute><ReservationHistory /></ProtectRoute>} />
           <Route path="/sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </div>
     </Router>

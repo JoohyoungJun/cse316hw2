@@ -4,9 +4,35 @@ Email: joohyoung.jun@stonybrook.edu
 */
 import React from "react";
 import { Link } from "react-router-dom";    //Used Link rather than href thing
+import { useNavigate } from "react-router-dom";
 import "../App.css";
+import axios from "axios";
 
 const Navbar = () => {
+    const navigate = useNavigate();
+
+    const clickSignOut = async () => {
+        try {
+            //get refreshToken from localStorage
+            const refreshToken = localStorage.getItem("refreshToken");
+            if (!refreshToken) {    //no tokne found, error
+                console.error("No refresh token found in localStorage");
+                return;
+            }
+            
+            //request server to sign-out
+            await axios.post("http://localhost:3001/sign-out", { token: refreshToken });
+    
+            //remove tokens from localStorage
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("refreshToken");
+    
+            console.log("Sign-out success");
+            navigate("/sign-in"); //re-direct to sign-in page after signing out
+        } catch (err) { //failure to sign out
+            console.error("Sign-out error:", err.response?.data || err.message);
+        }
+    };
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container">
@@ -36,6 +62,9 @@ const Navbar = () => {
                         </li>
                         <li className="nav-item">
                             <Link to="sign-in" className="nav-link">Sign In</Link>
+                        </li>
+                        <li className="nav-item">
+                            <button className="btn btn-link nav-link" onClick={clickSignOut}>Sign Out</button>
                         </li>
                         <li className="nav-item">
                             <Link to="/user-info" className="nav-link user-icon">

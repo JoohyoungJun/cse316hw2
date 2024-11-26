@@ -45,7 +45,7 @@ const SignUp = () => {
     };
 
     const submission = async (e) => {
-
+        e.preventDefault();
         //used some() in order to check same email address exist in db
         const emailExist = emailList.some((emailEliment) => emailEliment === email);
         
