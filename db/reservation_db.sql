@@ -75,7 +75,7 @@ CREATE TABLE `login` (
 
 LOCK TABLES `login` WRITE;
 /*!40000 ALTER TABLE `login` DISABLE KEYS */;
-INSERT INTO `login` VALUES ('joohyoung.jun@stonybrook.edu','df','f48844cc281e94a3b072926c725d23b2b0e805f1922c496db93d098dc787dfb1');
+INSERT INTO `login` VALUES ('abc@email.com','abc','947e3ebcundefined2725cb623f78bba30249c602491b956a6a0cdd12b731da7f8980f'),('asdf@123.com','asdf','7dd1c7df2c1a53dc2f271ad832b0b60bundefinedb4df49undefinede78a05dacb1615f8db51c'),('email1@email.com','test1','a1c036c2b6e50da61b4e78fd1bd19b8e13753f7cef75476dc8d076cca78316f'),('jjh113022@naver.com','Jay','e4f45d8ccc833aa32d76b7b1b4305dbb956bbf5db758f8a2cc02869e05084e2'),('joohyoung.jun@stonybrook.edu','df','f48844cc281e94a3b072926c725d23b2b0e805f1922c496db93d098dc787dfb1'),('sample1@email.com','sample1','1de7f3122c5216ddf3d08a7495783fdda4d817424f2aeeee4c15c6a25884ebb'),('test1@test.com','test1','47108b1013de0a4b8391b69dd538a0b71a20e07b7704ae797f2e0f2b5afa1f3');
 /*!40000 ALTER TABLE `login` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,7 +106,7 @@ CREATE TABLE `reservations` (
 
 LOCK TABLES `reservations` WRITE;
 /*!40000 ALTER TABLE `reservations` DISABLE KEYS */;
-INSERT INTO `reservations` VALUES (626096216,'2024-11-14',2,0,'pool reservation test 1','Swimming Pool','User','/assignImage/pool.jpg','C102'),(765819525,'2024-11-15',2,1,'gym reservation test 1','Gym','User','/assignImage/gym.jpg','C101'),(970659777,'2024-11-16',4,1,'conference room reservation test 1','Conference Room','User','/assignImage/conference.jpg','B101');
+INSERT INTO `reservations` VALUES (767305781,'2024-12-01',3,1,'test1','Library','User','/assignImage/library.jpg','B301'),(847234077,'2024-11-30',2,0,'test1','Gym','sample1','/assignImage/gym.jpg','C101'),(970659777,'2024-11-16',4,1,'conference room reservation test 1','Conference Room','User','/assignImage/conference.jpg','B101');
 /*!40000 ALTER TABLE `reservations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -119,4 +119,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-21 14:58:44
+-- Dump completed on 2024-11-27 12:47:32

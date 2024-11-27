@@ -17,7 +17,6 @@ import cors from 'cors';
 import { hashutil } from './src/util/hashutil.js';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const { sign } = jwt;
@@ -33,14 +32,7 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
 }));
-app.use(cookieParser());
 app.use((req, res, next) => {
-    /*
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    */
     next();
 });
 
@@ -201,8 +193,6 @@ app.post('/sign-out', (req, res) => {
     //remove refresh token using filter
     refreshTokens = refreshTokens.filter(token => token !== refreshToken);
 
-    console.log("Refresh token removed:", refreshToken);
-
     res.status(200).json({ message: "Sign-out success!" });
 });
 
@@ -243,7 +233,6 @@ function authenticateToken(req, res, next) {
         }
 
         req.user = user;
-        console.log("Token verified successfully:", user);
         next();
     });
 }

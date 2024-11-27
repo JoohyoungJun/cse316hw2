@@ -200,7 +200,7 @@ const Reservation = () => {
             isSK: affiliation === "Yes" ? true : false,
             purpose,
             reservationName: facilityInfo.name,
-            userName: localStorage.getItem("userName"),
+            userName: localStorage.getItem("userName"), 
             imageSrc: facilityInfo.image,
             reservationLocation: facilityInfo.location
             
