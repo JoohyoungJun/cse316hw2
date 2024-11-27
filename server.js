@@ -186,7 +186,11 @@ app.post('/sign-in', (req, res) => {
         //res.status(200).send("Sign in success!");
         console.log("Access Token: ", accessToken);
         console.log("Refresh token", refreshToken);
-        res.status(200).json({ accessToken, refreshToken, message: "Sign-in Success!" });
+        res.status(200).json({ 
+            accessToken, 
+            refreshToken, 
+            userName: result[0].userName,
+            message: "Sign-in Success!" });
     });
 });
 

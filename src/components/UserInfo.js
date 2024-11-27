@@ -4,21 +4,56 @@ Email: joohyoung.jun@stonybrook.edu
 */
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const UserInfo = () => {
     const [userImage, setUserImage] = useState("/assignImage/user.png");    //default value for img
     const [password, setPassword] = useState("******");                     //default value for pw
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("abc@stonybrook.edu");
 
-    const saveImage = () => {   //save user image file doesn work for now 
-        setUserImage(userImage);    
-        window.alert("Image has been changed!");
+    useEffect(() => {   //fetch email, username, image data from localStorage (server -> localStorage)
+        const serverEmail = localStorage.getItem("email");
+        const serverUserName = localStorage.getItem("userName");
+        const serverUserImage = localStorage.getItem("userImage");
+
+        //initialize data with data from server
+        if(serverEmail) setEmail(serverEmail);
+        if(serverUserName) setUserName(serverUserName);
+        if(serverUserImage) setUserImage(serverUserImage);
+    }, []);
+
+
+    const saveImage = () => {
+        const imageInput = document.getElementById("imageInput"); //image input from html
+        const fileName = imageInput?.files?.[0]; 
+        if(!fileName) { //if image is not selected
+            console.error("no file");
+            window.alert("No Image Selected!");
+            return;
+        } else if(fileName) {
+            //used FileReader() in order to read file contents
+            const reader = new FileReader();  
+            //onload executes when file-reading is completed   
+            reader.onload = () => {
+                const newImage = reader.result;
+                setUserImage(newImage);
+                localStorage.setItem("userImage", newImage);
+                window.alert("Image has been changed!");
+            };
+            reader.readAsDataURL(fileName);
+        }
     };
 
     const savePassword = () => {    //save user password
-        setPassword(password);
+        localStorage.setItem("password", password);
         window.alert("Password has been changed!");
     };
+
+    const saveUserName = () => {    //save username
+        localStorage.setItem("useName", userName);
+        window.alert("Name has been changed!");
+    }
 
     return (
         <div style={ {paddingLeft: "40%"} }>
@@ -36,7 +71,7 @@ const UserInfo = () => {
                                 <button className="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div className="modal-body">
-                                <input type="file" accept="image/*" onChange={saveImage} />
+                                <input id="imageInput" type="file" accept="image/*" />
                             </div>
                             <div className="modal-footer">
                                 <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -50,10 +85,10 @@ const UserInfo = () => {
             </div>
             
             <p />
-            <p>Email: abc@stonybrook.edu</p>
+            <p>Email: {email}</p>
             
             <div>
-                <p>{password}</p>
+                <p>Password: {password}</p>
                 <button className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">
                     Change Password
                 </button>
@@ -78,6 +113,39 @@ const UserInfo = () => {
                                 <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button className="btn btn-primary" data-bs-dismiss="modal" onClick={savePassword}>
                                     Save Password
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div>
+                <p>Name: {userName}</p>
+                <button className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userNameModal">
+                    Change Name
+                </button>
+                <div className="modal" id="userNameModal">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Change your Name</h5>
+                                <button className="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div className="modal-body">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={userName}
+                                    onChange={(newName) => setUserName(newName.target.value)}
+                                    placeholder="Enter new password"
+                                />
+                            </div>
+                            
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button className="btn btn-primary" data-bs-dismiss="modal" onClick={saveUserName}>
+                                    Save Name
                                 </button>
                             </div>
                         </div>

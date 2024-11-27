@@ -4,12 +4,13 @@ Email: joohyoung.jun@stonybrook.edu
 */
 import React from "react";
 import { Link } from "react-router-dom";    //Used Link rather than href thing
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useEffect } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
 
 const Navbar = () => {
     const navigate = useNavigate();
+    
 
     const clickSignOut = async () => {
         try {

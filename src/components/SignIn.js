@@ -24,6 +24,7 @@ const SignIn = () => {
             console.log("login status: ", sts.data);
             localStorage.setItem("authToken", sts.data.authToken);
             localStorage.setItem("refreshToken", sts.data.refreshToken);
+            localStorage.setItem("userName", sts.data.userName);
             window.alert("Sign-in Success!");
             navigate("/");
         } catch (err) {

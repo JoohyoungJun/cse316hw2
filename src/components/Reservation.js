@@ -105,20 +105,23 @@ const Reservation = () => {
 
     useEffect(() => {   //get reservations using axios.get()
         const fetchReservations = async () => {
-            try {
+            try {   
+                //get authToken from localStorage
                 const authToken = localStorage.getItem("authToken");
-                if (!authToken) {
+                if (!authToken) {   //no token found, error
                     console.error("No auth token found");
                     return;
                 }
+                //request server to get reservation list
+                //authheader with the Bearer token for authentication
                 const response = await axios.get("http://localhost:3001/reservations", {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
                     },
                 });
+                //set fetched resercation to reservation
                 setReservations(response.data);
-                console.log("Reservations fetched successfully:", response.data);
-            } catch (err) {
+            } catch (err) { //failure to fetch reservation 
                 console.error("Error fetching reservations:", err);
             }
         };
@@ -197,7 +200,7 @@ const Reservation = () => {
             isSK: affiliation === "Yes" ? true : false,
             purpose,
             reservationName: facilityInfo.name,
-            userName: "User",
+            userName: localStorage.getItem("userName"),
             imageSrc: facilityInfo.image,
             reservationLocation: facilityInfo.location
             

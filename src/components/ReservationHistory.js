@@ -13,20 +13,23 @@ const ReservationHistory = () => {
             try {
                 //get authToken from localStorage
                 const authToken = localStorage.getItem("authToken");
-                if (!authToken) {
+                if (!authToken) {//if not found, report error and return
                     console.error("No auth token found. Please log in.");
                     return;
                 }
-
+                
+                //get reservations from server
+                //authheader with the Bearer token for authentication
                 const response = await axios.get("http://localhost:3001/reservations", {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
                     },
                 });
 
+                //set fetched reservation to reservation
                 setReservations(response.data);
-                console.log("Fetched reservations:", response.data);
             } catch (err) {
+                //failure to fetch
                 console.error("Error fetching reservations:", err);
             }
         };
@@ -36,23 +39,26 @@ const ReservationHistory = () => {
 
     const cancelReservation = async (reservationId) => {
         try {
+            //get authToken from localStorate
             const authToken = localStorage.getItem("authToken");
-            if (!authToken) {
+            if (!authToken) {   //if not found, report error and return
                 console.error("No auth token found. Please log in.");
                 return;
             }
 
+            //delete request to a server 
+            //used reservationId
             await axios.delete(`http://localhost:3001/reservations/${reservationId}`, {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
             });
 
-            console.log(`Reservation with ID ${reservationId} canceled successfully.`);
+            //remove canceld reservation from the list using filter
             setReservations((prevReservations) =>
                 prevReservations.filter((reservation) => reservation.reservationId !== reservationId)
             );
-        } catch (err) {
+        } catch (err) { //failure to cancel
             console.error("Error canceling reservation:", err.response?.data || err.message);
         }
     };
