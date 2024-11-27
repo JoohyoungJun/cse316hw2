@@ -2,15 +2,20 @@
 Name: Joohyoung Jun
 Email: joohyoung.jun@stonybrook.edu
 */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";    //Used Link rather than href thing
-import { useNavigate, useEffect } from "react-router-dom";
+import { useNavigate, } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
 
 const Navbar = () => {
     const navigate = useNavigate();
-    
+    const [userImage, setUserImage] = useState("/assignImage/user.png");
+
+    useEffect(() => {
+        const serverImage = localStorage.getItem("userImage");  //get userImage from server
+        if(serverImage) setUserImage(serverImage);  //update userImage if exists
+    }, []);
 
     const clickSignOut = async () => {
         try {
@@ -68,8 +73,9 @@ const Navbar = () => {
                             <button className="btn btn-link nav-link" onClick={clickSignOut}>Sign Out</button>
                         </li>
                         <li className="nav-item">
-                            <Link to="/user-info" className="nav-link user-icon">
-                                <img src="/assignImage/user.png" alt="user.png" style={{ width: '40px', height: '40px' }} />
+                            <Link to="/user-info" className="nav-link user-icon" id="userIcon">
+                                <img src={userImage} alt="user.png" id="userIcon" />
+
                             </Link>
                         </li>
                     </ul>

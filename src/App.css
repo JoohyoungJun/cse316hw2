@@ -71,7 +71,17 @@ body {
 
 }
 
+#userImage {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+}
 
+#userIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
 .container {
   margin-right: -25px;
 }

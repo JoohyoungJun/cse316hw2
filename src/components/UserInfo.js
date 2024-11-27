@@ -3,6 +3,7 @@ Name: Joohyoung Jun
 Email: joohyoung.jun@stonybrook.edu
 */
 
+import "../App.css";
 import React from "react";
 import { useState, useEffect } from "react";
 
@@ -57,8 +58,9 @@ const UserInfo = () => {
 
     return (
         <div style={ {paddingLeft: "40%"} }>
-            <h2>User Information</h2>
-            <img src={userImage} alt="User" style={{ width: "300px" }} />
+            <p></p><h2>User Information</h2><p></p>
+            <img src={userImage} alt="User" id="userImage" style={{ width: "300px"}} />
+            <p></p>
             <div>
                 <button className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#imageModal">
                     Change Image
